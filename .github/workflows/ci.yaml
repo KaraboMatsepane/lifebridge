@@ -1,32 +1,31 @@
-name: CI
+  name: CI
 
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+  on:
+    push:
+      branches: [main]
+    pull_request:
+      branches: [main]
 
+  jobs:
+    backend-health-check:
+      runs-on: ubuntu-latest
 
-jobs:
-  backend-health-check:
-    runs-on: ubuntu-latest
+      steps:
+        - name: Check out the code
+          uses: actions/checkout@v4
 
-    steps:
-      - name: Check out the code
-      - uses: actions/checkout@v4
+        - name: Set up Python
+          uses: actions/setup-python@v5
+          with:
+            python-version: "3.11"
 
-      - name: Set up Python
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
+        - name: Install backend dependencies
+          working-directory: backend
+          run: pip install -r requirements.txt
 
-      - name: install backend dependencies
-      - working-directory: backend
-      - run: pip install -r requirements.txt
-
-      - name: boot the backend and check health
-      - working-directory:
-      - run: |
-          uvicorn frontend.host:app --port 8000 &
-          sleep 3
-          curl -f http://localhost:8000/health
+        - name: Boot the backend and check health
+          working-directory: backend
+          run: |
+            uvicorn app.main:app --port 8000 &
+            sleep 3
+            curl -f http://localhost:8000/health
