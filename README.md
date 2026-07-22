@@ -1,0 +1,2 @@
+# database schema
+two tables, one for policyholders, the other for beneficiaries. no column for role. This is because if role is a column, it becomes data, which is an UPDATE statement away from wrong, editable by any bug or any admin fat-finger, capable of contradicting reality (a "beneficiary" row whose policyholder is alive). In this design, role is derived. it's a conclusion the mint logic draws from what the persona is and what the data relationships say, at the moment of minting. It cannot be edited into a wrong state because it's never stored. 
